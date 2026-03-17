@@ -10,34 +10,36 @@ contract FundMe {
     error FundMe__CallFailed();
 
     using Conversion for uint256;
-    uint256 public constant MIN_AMOUNT = 5e18;
-    address public immutable i_owner;
+    uint256 private constant MIN_AMOUNT = 5e18;
+    address private immutable i_owner;
     AggregatorV3Interface private s_priceFeed;
 
-    address[] funders;
-
-    mapping(address => uint256) public funderToAmount;
+    address[] private s_funders;
+    mapping(address => uint256) private s_funderToAmount;
 
     constructor(address _priceFeed) {
         i_owner = msg.sender;
         s_priceFeed = AggregatorV3Interface(_priceFeed);
     }
 
+    function getVersion() public view returns (uint256) {
+        return s_priceFeed.version();
+    }
+
     function fund() public payable {
-        if (msg.value.convertToDoller(s_priceFeed) < MIN_AMOUNT)
+        if (msg.value.convertToDoller(s_priceFeed) < MIN_AMOUNT) {
             revert FundMe__InvalidAmount();
-        funders.push(msg.sender);
-        funderToAmount[msg.sender] += msg.value;
+        }
+        s_funders.push(msg.sender);
+        s_funderToAmount[msg.sender] += msg.value;
     }
 
     function withdraw() public OnlyOwner {
-        for (uint256 i = 0; i < funders.length; i++) {
-            funderToAmount[funders[i]] = 0;
+        for (uint256 i = 0; i < s_funders.length; i++) {
+            s_funderToAmount[s_funders[i]] = 0;
         }
-        funders = new address[](0);
-        (bool success, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        s_funders = new address[](0);
+        (bool success,) = payable(msg.sender).call{value: address(this).balance}("");
         if (!success) revert FundMe__CallFailed();
     }
 
@@ -52,5 +54,23 @@ contract FundMe {
 
     fallback() external payable {
         fund();
+    }
+
+    //View Functions
+
+    function getOwner() external view returns (address) {
+        return i_owner;
+    }
+
+    function getMinAmount() external pure returns (uint256) {
+        return MIN_AMOUNT;
+    }
+
+    function getFunder(uint256 _index) external view returns (address) {
+        return s_funders[_index];
+    }
+
+    function getFunderToAmount(address _funder) external view returns (uint256) {
+        return s_funderToAmount[_funder];
     }
 }

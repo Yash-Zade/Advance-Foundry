@@ -1,0 +1,6 @@
+FundMeTest:testFundUpdatesFundingDatastructures() (gas: 109131)
+FundMeTest:testFundWithoutEnoughEth() (gas: 29144)
+FundMeTest:testMinimumDollerIsFive() (gas: 5799)
+FundMeTest:testOnlyOwnerCanWithdraw() (gas: 106650)
+FundMeTest:testWithdrawWithMultipleFunders() (gas: 475500)
+FundMeTest:Fund Me\test\FundMeTest.t.sol() (gas: 91089)

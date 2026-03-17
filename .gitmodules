@@ -1,0 +1,3 @@
+[submodule "Fund Me/lib/foundry-devops"]
+	path = Fund Me/lib/foundry-devops
+	url = https://github.com/cyfrin/foundry-devops

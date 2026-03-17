@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {FundMe} from "../src/FundMe.sol";
-import {DeployFundMe} from "../script/DeployFundMe.s.sol";
+import {FundMe} from "../../src/FundMe.sol";
+import {DeployFundMe} from "../../script/DeployFundMe.s.sol";
 
 contract FundMeTest is Test {
     FundMe fundMe;
@@ -19,6 +19,11 @@ contract FundMeTest is Test {
 
     function testMinimumDollerIsFive() public {
         assertEq(fundMe.getMinAmount(), 5e18);
+    }
+
+    function testGetVersion() public {
+        uint256 version = fundMe.getVersion();
+        assertEq(version, 4);
     }
 
     function testFundWithoutEnoughEth() public {
